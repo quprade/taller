@@ -1,0 +1,110 @@
+﻿@model TallerMVCRazorChallenge.Models.Car
+
+@{
+    ViewData["Title"] = "Guess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Guess price Car</h1>
+
+<div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12  d-xl-flex">
+            <div class="col-md-6">                
+                <dl class="row">
+                    <input asp-for="Id" id="inputval" class="form-control" hidden />                   
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Make)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Make)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Model)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Model)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Year)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Year)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Doors)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Doors)
+                    </dd>
+                    <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Color)
+                    </dt>
+                    <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Color)
+                    </dd>
+                </dl>
+            </div>
+
+            <div class="col-md-6">  
+                <div class="col-md-12  d-xl-flex">
+                     <div class = "col-sm-10 form-group">
+                        <input type="number" id="inputtxt" class="form-control" />
+                    </div>
+                    <div class = "col-sm-2 form-group">
+                            <input type="button" id="btnguess" value="Guess" class="btn btn-primary" />
+                    </div>
+                </div>               
+                <div class="col-md-12">
+                   <div id="divinfo">
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-controller="Home" asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+   <script type="text/javascript">
+    $(document).ready(function () { 
+        $("#btnguess").on("click", function(){
+             $.ajax({
+                type: "GET",
+                url: "/Cars/GuessSearch",
+                data: {
+                    id:$("#inputval").val(),
+                    searchprice:$("#inputtxt").val()
+                },
+                contentType: "application/json; charset=utf-8",
+               dataType: "json",
+                success: function (data) {
+                    if(data){
+                        CreateLabelInfo("Great job,you guess the price", "bg-success text-white");                         
+                    }
+                    else{
+                       CreateLabelInfo("Sorry, you can't guess the price", "bg-warning text-dark"); 
+                    }
+                },
+                failure: function (response) {
+                    CreateLabelInfo("Sorry, you can't guess the price", "bg-warning text-dark"); 
+                }
+            });
+        })
+    })
+
+    function CreateLabelInfo(msg, classactual){
+        $("#divinfo").empty();
+        html = '';
+        html +='<div>';            
+            html +='<div>';            
+            html +='<div class="p-3 mb-2 '+ classactual +'"> ' + msg ;
+            html +='</div>';
+        html +='</div>';
+        $("#divinfo").append(html);
+    }
+</script>
+};
